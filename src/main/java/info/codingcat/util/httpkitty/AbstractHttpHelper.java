@@ -2,6 +2,7 @@ package info.codingcat.util.httpkitty;
 
 import java.io.IOException;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Base64;
@@ -10,9 +11,9 @@ import java.util.Map;
 
 public abstract class AbstractHttpHelper {
 
-    private Map<String, String> headers = new HashMap<>();
+    protected Map<String, String> headers = new HashMap<>();
 
-    private URL url;
+    protected URL url;
 
     protected AbstractHttpHelper(URL url){
         this.url = url;
@@ -35,7 +36,7 @@ public abstract class AbstractHttpHelper {
         switch (scheme){
             case Basic:
                 byte[] base64Encode = Base64.getEncoder().encode((username + ":" + password).getBytes());
-                auth.append("Basic").append(' ').append(Arrays.toString(base64Encode));
+                auth.append("Basic").append(' ').append(new String(base64Encode));
                 break;
             default:
                 throw new IOException("Scheme not supported!");
@@ -45,6 +46,16 @@ public abstract class AbstractHttpHelper {
         return this;
     }
 
-    public abstract HttpKittyResponse shoot();
+    public abstract HttpKittyResponse shoot() throws IOException;
+
+    protected void setConnectionHeaders(HttpURLConnection conn){
+
+        for(Map.Entry<String, String> header : this.headers.entrySet()){
+
+            conn.setRequestProperty(header.getKey(), header.getValue());
+
+        }
+
+    }
 
 }

@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public class HttpKittyResponseImpl implements HttpKittyResponse {
@@ -14,26 +15,17 @@ public class HttpKittyResponseImpl implements HttpKittyResponse {
 
     private int responseCode;
 
-    private Map<String, String> headers;
+    private Map<String, List<String>> headers;
 
     @Override
     public InputStream getResponse() {
         return this.response;
     }
 
-    @Override
-    public String getResponseAsString() throws IOException {
-        return IOUtils.toString(this.response, "utf-8");
-    }
 
     @Override
     public InputStream getErrorMessage() {
         return this.errorMessage;
-    }
-
-    @Override
-    public String getErrorMessageAsString() throws IOException {
-        return IOUtils.toString(this.response, "utf-8");
     }
 
     @Override
@@ -42,12 +34,12 @@ public class HttpKittyResponseImpl implements HttpKittyResponse {
     }
 
     @Override
-    public String getHeader(String key) {
+    public List<String> getHeader(String key) {
         return this.headers.get(key);
     }
 
     @Override
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return this.headers;
     }
 
@@ -63,7 +55,7 @@ public class HttpKittyResponseImpl implements HttpKittyResponse {
         this.responseCode = responseCode;
     }
 
-    public void setHeaders(Map<String, String> headers) {
+    public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
     }
 }

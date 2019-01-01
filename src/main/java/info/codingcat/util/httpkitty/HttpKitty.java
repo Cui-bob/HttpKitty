@@ -1,16 +1,11 @@
 package info.codingcat.util.httpkitty;
 
-import java.io.OutputStream;
-import java.util.Map;
+import java.net.URL;
 
 public interface HttpKitty {
 
-    HttpKittyResponse get();
+    HttpGetHelper get(URL url);
 
-    HttpKittyResponse get(Map<String, String> params);
-
-    HttpKittyResponse post(String body);
-
-    HttpKittyResponse post(OutputStream body);
+    HttpPostHelper post(URL url);
 
 }

@@ -4,46 +4,89 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-public class KittyURLBuilder{
+public class KittyURLBuilder {
 
     private StringBuilder url = new StringBuilder();
 
-    public KittyURLBuilder(String protocol, String host, String port){
-        this.url.append(protocol).append("://").append(host).append(":").append(port);
+    private Map<String, String> params = new LinkedHashMap<>();
+
+    private List<String> paths = new ArrayList<>();
+
+    private int port = -1;
+
+    public KittyURLBuilder(String protocol, String host) {
+        this.url.append(protocol).append("://").append(host.replace("/", ""));
     }
 
-    public KittyURLBuilder(String protocol, String host, String port, String path){
-        this(protocol, host, port);
+    public KittyURLBuilder port(int port) {
+        this.port = port;
+        return this;
+    }
 
-        if(!path.startsWith("/")) {
-            url.append("/");
+
+    public KittyURLBuilder path(String path) {
+
+        while (path.startsWith("/")) {
+            path = path.substring(1);
         }
 
-        url.append(path);
+        while (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+
+        this.paths.add(path);
+
+
+        return this;
     }
 
     public KittyURLBuilder param(String key, String value) throws UnsupportedEncodingException {
-        if(url.indexOf("?") != -1){
-            url.append("?");
-        }else{
-            url.append("&");
-        }
-        url.append(URLEncoder.encode(key, "UTF-8")).append('=').append(URLEncoder.encode(value, "UTF-8"));
+        this.params.put(key, value);
         return this;
     }
 
     public KittyURLBuilder params(Map<String, String> params) throws UnsupportedEncodingException {
-        for(Map.Entry<String, String> param : params.entrySet()){
-            this.param(param.getKey(), param.getValue());
-        }
-
+        this.params.putAll(params);
         return this;
     }
 
     public URL build() throws MalformedURLException {
-        return new URL(url.toString());
+
+        // Append port
+
+        if(port != -1){
+
+            this.url.append(':').append(port);
+
+        }
+
+        // Append paths
+
+        for(String path : paths){
+
+            url.append('/').append(path);
+
+        }
+
+        // Append params
+
+        this.url.append('?');
+
+        for(Map.Entry<String, String> param : this.params.entrySet()){
+
+            this.url.append(param.getKey()).append('=').append(param.getValue());
+            this.url.append('&');
+        }
+
+        this.url.deleteCharAt(this.url.length() - 1);
+
+        return new URL(this.url.toString());
+
     }
 
 }
