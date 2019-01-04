@@ -93,6 +93,17 @@ public class HttpGetHelperTest {
 
     }
 
+    @Test
+    public void testGetWithCookie() throws IOException {
+
+        httpGetHelper.cookie("Test1", "Test1")
+                .cookie("Test2", "Test2")
+                .shoot();
+
+        Mockito.verify(connection).setRequestProperty("Cookie", "Test1=Test1;Test2=Test2");
+
+    }
+
 
 
 }
