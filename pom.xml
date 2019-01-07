@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>info.codingcat.util</groupId>
     <artifactId>HttpKitty</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
@@ -21,6 +21,8 @@
                     </flowInitContext>
                     <noDeploy>true</noDeploy>
                     <pushReleases>true</pushReleases>
+                    <username>${git.user}</username>
+                    <password>${git.password}</password>
                 </configuration>
             </plugin>
 
