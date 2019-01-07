@@ -1,12 +1,11 @@
 package info.codingcat.util.httpkitty;
 
 import java.io.IOException;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class AbstractHttpHelper {
@@ -18,6 +17,8 @@ public abstract class AbstractHttpHelper {
     protected AbstractHttpHelper(URL url){
         this.url = url;
     }
+
+    protected Map<String, String> cookies = new LinkedHashMap<>();
 
     public AbstractHttpHelper header(String key, String value){
         headers.put(key, value);
@@ -56,6 +57,25 @@ public abstract class AbstractHttpHelper {
 
         }
 
+        StringBuilder cookieHeader = new StringBuilder();
+
+        for (Map.Entry<String, String> cookie : cookies.entrySet()){
+
+            if(cookieHeader.length() != 0){
+                cookieHeader.append(";");
+            }
+
+            cookieHeader.append(cookie.getKey()).append("=").append(cookie.getValue());
+
+        }
+
+        conn.setRequestProperty("Cookie", cookieHeader.toString());
+
+    }
+
+    public AbstractHttpHelper cookie(String key, String value){
+        this.cookies.put(key, value);
+        return this;
     }
 
 }
